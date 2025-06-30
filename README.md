@@ -100,7 +100,7 @@ knowledge-base-platform/
 1. **Clone the repository**
    ```bash
    git clone https://github.com/seema97292/knowledge_base
-   cd knowledge-base/backend
+   cd knowledge_base/backend
 
 2. **Install dependencies**
    ```bash
