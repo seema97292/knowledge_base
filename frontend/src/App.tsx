@@ -20,6 +20,7 @@ import DocumentView from "./components/documents/DocumentView";
 import DocumentVersions from "./components/documents/DocumentVersions";
 import DocumentVersionView from "./components/documents/DocumentVersionView";
 import DocumentVersionCompare from "./components/documents/DocumentVersionCompare";
+import ShareDocument from "./components/documents/ShareDocument";
 import Header from "./components/layout/Header";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 
@@ -113,12 +114,12 @@ function AppContent() {
         <Route
           path="/documents/:id"
           element={
-            <ProtectedRoute>
+            <>
               <Header onSearch={handleSearch} />
               <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 <DocumentView />
               </main>
-            </ProtectedRoute>
+            </>
           }
         />
 
@@ -129,6 +130,18 @@ function AppContent() {
               <Header onSearch={handleSearch} />
               <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 <DocumentEditor />
+              </main>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/documents/:id/share"
+          element={
+            <ProtectedRoute>
+              <Header onSearch={handleSearch} />
+              <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <ShareDocument />
               </main>
             </ProtectedRoute>
           }

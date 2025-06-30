@@ -7,8 +7,9 @@ import {
   Globe,
   History,
   Lock,
+  Share2,
   Trash2,
-  User
+  User,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -24,7 +25,7 @@ import { Skeleton } from "../ui/skeleton";
 export default function DocumentView() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [document, setDocument] = useState<Document | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -198,7 +199,6 @@ export default function DocumentView() {
                   )}
                 </Button>
               )}
-
               {!canEdit() && (
                 <Badge
                   variant={
@@ -218,16 +218,28 @@ export default function DocumentView() {
                   )}
                 </Badge>
               )}
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate(`/documents/${document._id}/versions`)}
-              >
-                <History className="h-4 w-4 mr-2" />
-                History
-              </Button>
-
+              {isAuthenticated && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    navigate(`/documents/${document._id}/versions`)
+                  }
+                >
+                  <History className="h-4 w-4 mr-2" />
+                  History
+                </Button>
+              )}
+              {canEdit() && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(`/documents/${document._id}/share`)}
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share
+                </Button>
+              )}
               {canEdit() && (
                 <>
                   <Link to={`/documents/${document._id}/edit`}>
@@ -238,7 +250,6 @@ export default function DocumentView() {
                   </Link>
                 </>
               )}
-
               {canDelete() && (
                 <Button variant="destructive" size="sm" onClick={handleDelete}>
                   <Trash2 className="h-4 w-4 mr-2" />

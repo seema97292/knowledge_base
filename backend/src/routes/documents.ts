@@ -38,11 +38,11 @@ const visibilityValidation = [
 ];
 
 const shareValidation = [
-  body("userId")
+  body("email")
     .notEmpty()
-    .withMessage("User ID is required")
-    .isMongoId()
-    .withMessage("Invalid user ID"),
+    .withMessage("User email is required")
+    .isEmail()
+    .withMessage("Invalid email format"),
   body("permission")
     .optional()
     .isIn(["view", "edit"])
@@ -51,13 +51,13 @@ const shareValidation = [
 
 router.get("/search", protect, searchDocuments);
 router.get("/", protect, getDocuments);
-router.get("/:id", protect, getDocument);
+router.get("/:id", getDocument);
 router.post("/", protect, createDocumentValidation, createDocument);
 router.put("/:id", protect, updateDocumentValidation, updateDocument);
 router.delete("/:id", protect, deleteDocument);
 router.put("/:id/visibility", protect, visibilityValidation, updateVisibility);
 router.post("/:id/share", protect, shareValidation, shareDocument);
-router.delete("/:id/share", protect, removeAccess);
+router.delete("/:id/share/:userId", protect, removeAccess);
 
 router.use("/:id/versions", versionRoutes);
 

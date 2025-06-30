@@ -77,12 +77,12 @@ export const documentsAPI = {
     api.put(`/documents/${id}/visibility`, { visibility }),
   share: (
     id: string,
-    userId: string,
+    email: string,
     permission: string,
   ): Promise<AxiosResponse> =>
-    api.post(`/documents/${id}/share`, { userId, permission }),
+    api.post(`/documents/${id}/share`, { email, permission }),
   removeAccess: (id: string, userId: string): Promise<AxiosResponse> =>
-    api.delete(`/documents/${id}/share`, { data: { userId } }),
+    api.delete(`/documents/${id}/share/${userId}`),
 };
 
 export const versionsAPI = {

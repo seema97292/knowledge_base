@@ -1,5 +1,3 @@
-
-
 export interface User {
   _id: string;
   username: string;
@@ -17,8 +15,10 @@ export interface Document {
   updatedAt: string;
   lastModifiedBy?: User;
   sharedWith?: {
+    _id: string;
     user: User;
     permission: "read" | "edit";
+    sharedAt: string;
   }[];
 }
 
