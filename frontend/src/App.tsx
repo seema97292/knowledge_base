@@ -1,21 +1,24 @@
 import { useState } from "react";
+import { Toaster } from "react-hot-toast";
 import {
+  Navigate,
+  Route,
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
 } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
-import { AuthProvider, useAuth } from "./hooks/useAuth";
+import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Header from "./components/layout/Header";
+import ForgotPassword from "./components/auth/ForgotPassword";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
-import ForgotPassword from "./components/auth/ForgotPassword";
+import RegistrationSuccess from "./components/auth/RegistrationSuccess";
+import ResendVerification from "./components/auth/ResendVerification";
+import VerifyEmail from "./components/auth/VerifyEmail";
+import DocumentEditor from "./components/documents/DocumentEditor";
 import DocumentList from "./components/documents/DocumentList";
 import DocumentView from "./components/documents/DocumentView";
-import DocumentEditor from "./components/documents/DocumentEditor";
-import "./App.css";
+import Header from "./components/layout/Header";
+import { AuthProvider, useAuth } from "./hooks/useAuth";
 
 function AppContent() {
   const { isAuthenticated } = useAuth();
@@ -39,7 +42,6 @@ function AppContent() {
       />
 
       <Routes>
-        {/* Public routes */}
         <Route
           path="/login"
           element={isAuthenticated ? <Navigate to="/" replace /> : <Login />}
@@ -54,8 +56,33 @@ function AppContent() {
             isAuthenticated ? <Navigate to="/" replace /> : <ForgotPassword />
           }
         />
+        <Route
+          path="/registration-success"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/" replace />
+            ) : (
+              <RegistrationSuccess />
+            )
+          }
+        />
+        <Route
+          path="/verify-email/:token"
+          element={
+            isAuthenticated ? <Navigate to="/" replace /> : <VerifyEmail />
+          }
+        />
+        <Route
+          path="/resend-verification"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/" replace />
+            ) : (
+              <ResendVerification />
+            )
+          }
+        />
 
-        {/* Protected routes */}
         <Route
           path="/"
           element={
@@ -104,7 +131,6 @@ function AppContent() {
           }
         />
 
-        {/* Catch all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>

@@ -6,7 +6,7 @@ import { AuthRequest, JWTPayload } from "../types";
 const protect = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): Promise<void> => {
   let token: string | undefined;
 
@@ -15,13 +15,10 @@ const protect = async (
     req.headers.authorization.startsWith("Bearer")
   ) {
     try {
-      // Get token from header
       token = req.headers.authorization.split(" ")[1];
 
-      // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
 
-      // Get user from the token
       const userDoc = await User.findById(decoded.id).select("-password");
 
       if (userDoc) {

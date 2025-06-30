@@ -1,4 +1,4 @@
-// Core application types
+
 
 export interface User {
   _id: string;
@@ -34,7 +34,6 @@ export interface LoginData {
   password: string;
 }
 
-// Component prop types
 export interface ComponentProps {
   className?: string;
 }

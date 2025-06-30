@@ -41,13 +41,12 @@ export default function Header({ onSearch }: HeaderProps) {
   return (
     <header className="bg-white border-b border-gray-200 px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Logo */}
+       
         <Link to="/" className="flex items-center space-x-2">
           <BookOpen className="h-8 w-8 text-blue-600" />
           <span className="text-xl font-bold text-gray-900">KnowledgeBase</span>
         </Link>
 
-        {/* Search */}
         <div className="flex-1 max-w-lg mx-8">
           <form onSubmit={handleSearch} className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -63,7 +62,6 @@ export default function Header({ onSearch }: HeaderProps) {
           </form>
         </div>
 
-        {/* Actions */}
         <div className="flex items-center space-x-4">
           {user ? (
             <>

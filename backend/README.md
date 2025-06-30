@@ -31,8 +31,8 @@ A TypeScript-based backend for a knowledge base platform similar to Confluence.
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd knowledge-base-platform/backend
+git clone git clone https://github.com/seema97292/knowledge_base
+cd knowledge-base/backend
 ```
 
 2. Install dependencies:
@@ -162,6 +162,4 @@ src/
 6. Push to the branch: `git push origin feature-name`
 7. Create a Pull Request
 
-## License
 
-This project is licensed under the ISC License.

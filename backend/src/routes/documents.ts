@@ -16,7 +16,6 @@ import versionRoutes from "./versions";
 
 const router = express.Router();
 
-// Validation middleware
 const createDocumentValidation = [
   body("title")
     .notEmpty()
@@ -50,7 +49,6 @@ const shareValidation = [
     .withMessage("Permission must be either view or edit"),
 ];
 
-// Routes
 router.get("/search", protect, searchDocuments);
 router.get("/", protect, getDocuments);
 router.get("/:id", protect, getDocument);
@@ -61,7 +59,6 @@ router.put("/:id/visibility", protect, visibilityValidation, updateVisibility);
 router.post("/:id/share", protect, shareValidation, shareDocument);
 router.delete("/:id/share", protect, removeAccess);
 
-// Nested routes for versions
 router.use("/:id/versions", versionRoutes);
 
 export default router;

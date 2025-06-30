@@ -38,7 +38,7 @@ interface Document {
 export default function DocumentEditor() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user: _user } = useAuth(); // Keep for potential future use
+  const { user: _user } = useAuth();
   const [document, setDocument] = useState<Document | null>(null);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -61,14 +61,14 @@ export default function DocumentEditor() {
   }, [id]);
 
   useEffect(() => {
-    // Auto-save functionality
+   
     if (hasChanges && !isNewDocument) {
       if (autoSaveRef.current) {
         clearTimeout(autoSaveRef.current);
       }
       autoSaveRef.current = setTimeout(() => {
         handleSave(true);
-      }, 3000); // Auto-save after 3 seconds of inactivity
+      }, 3000); 
     }
 
     return () => {
@@ -224,7 +224,7 @@ export default function DocumentEditor() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header */}
+      
       <div className="flex items-center justify-between">
         <Button
           variant="ghost"
@@ -275,7 +275,6 @@ export default function DocumentEditor() {
         </div>
       </div>
 
-      {/* Document Editor */}
       <Card className="">
         <CardHeader className="">
           <CardTitle className="">

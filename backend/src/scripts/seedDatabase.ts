@@ -3,23 +3,19 @@ import dotenv from "dotenv";
 import User from "../models/User";
 import Document from "../models/Document";
 
-// Load environment variables
 dotenv.config();
 
 const seedDatabase = async (): Promise<void> => {
   try {
-    // Connect to database
     await mongoose.connect(process.env.MONGODB_URI!);
 
     console.log("Connected to MongoDB");
 
-    // Clear existing data
     await User.deleteMany({});
     await Document.deleteMany({});
 
     console.log("Cleared existing data");
 
-    // Create sample users
     const users = [
       {
         username: "john_doe",
@@ -41,7 +37,6 @@ const seedDatabase = async (): Promise<void> => {
     const createdUsers = await User.create(users);
     console.log("Created sample users");
 
-    // Create sample documents
     const documents = [
       {
         title: "Welcome to Knowledge Base",

@@ -1,11 +1,13 @@
 import { Request } from "express";
 import { Document as MongooseDocument, Types } from "mongoose";
 
-// User interface
 export interface IUser extends MongooseDocument {
   username: string;
   email: string;
   password: string;
+  isEmailVerified: boolean;
+  emailVerificationToken?: string | undefined;
+  emailVerificationExpire?: Date | undefined;
   resetPasswordToken?: string | undefined;
   resetPasswordExpire?: Date | undefined;
   createdAt: Date;
@@ -13,7 +15,6 @@ export interface IUser extends MongooseDocument {
   matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
-// Document interface
 export interface ISharedUser {
   user: Types.ObjectId;
   permission: "view" | "edit";
@@ -40,7 +41,6 @@ export interface IDocument extends MongooseDocument {
   updatedAt: Date;
 }
 
-// Version interface
 export interface IVersion extends MongooseDocument {
   documentId: string;
   version: number;
@@ -50,7 +50,6 @@ export interface IVersion extends MongooseDocument {
   createdAt: Date;
 }
 
-// Auth request interface
 export interface AuthRequest extends Request {
   user?: {
     _id: string;
@@ -59,14 +58,12 @@ export interface AuthRequest extends Request {
   };
 }
 
-// JWT payload interface
 export interface JWTPayload {
   id: string;
   username: string;
   email: string;
 }
 
-// API Response interface
 export interface ApiResponse<T = any> {
   success: boolean;
   message?: string;
@@ -74,7 +71,6 @@ export interface ApiResponse<T = any> {
   error?: string;
 }
 
-// Environment variables
 export interface EnvVariables {
   NODE_ENV: string;
   PORT: string;

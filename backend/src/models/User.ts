@@ -26,6 +26,12 @@ const UserSchema = new Schema<IUser>({
     required: [true, "Password is required"],
     minlength: [6, "Password must be at least 6 characters"],
   },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  emailVerificationToken: String,
+  emailVerificationExpire: Date,
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {
@@ -38,7 +44,6 @@ const UserSchema = new Schema<IUser>({
   },
 });
 
-// Hash password before saving
 UserSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
@@ -50,7 +55,6 @@ UserSchema.pre<IUser>("save", async function (next) {
   next();
 });
 
-// Compare password method
 UserSchema.methods.matchPassword = async function (
   enteredPassword: string,
 ): Promise<boolean> {

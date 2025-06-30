@@ -73,10 +73,8 @@ const DocumentSchema = new Schema<IDocument>({
   },
 });
 
-// Create text index for search functionality
 DocumentSchema.index({ title: "text", content: "text" });
 
-// Update the updatedAt field before saving
 DocumentSchema.pre<IDocument>("save", function (next) {
   this.updatedAt = new Date();
   next();

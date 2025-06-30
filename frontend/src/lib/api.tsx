@@ -3,7 +3,6 @@ import axios, { AxiosResponse } from "axios";
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5101/api";
 
-// Create axios instance
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -11,7 +10,6 @@ const api = axios.create({
   },
 });
 
-// Add token to requests if available
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -20,7 +18,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle token expiration
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -33,7 +30,6 @@ api.interceptors.response.use(
   },
 );
 
-// Types
 interface LoginCredentials {
   email: string;
   password: string;
@@ -51,7 +47,6 @@ interface DocumentData {
   visibility?: string;
 }
 
-// Auth API
 export const authAPI = {
   register: (userData: RegisterData): Promise<AxiosResponse> =>
     api.post("/auth/register", userData),
@@ -61,9 +56,12 @@ export const authAPI = {
     api.post("/auth/forgot-password", { email }),
   resetPassword: (token: string, password: string): Promise<AxiosResponse> =>
     api.post("/auth/reset-password", { token, password }),
+  verifyEmail: (token: string): Promise<AxiosResponse> =>
+    api.get(`/auth/verify-email/${token}`),
+  resendVerification: (email: string): Promise<AxiosResponse> =>
+    api.post("/auth/resend-verification", { email }),
 };
 
-// Documents API
 export const documentsAPI = {
   getAll: (): Promise<AxiosResponse> => api.get("/documents"),
   getById: (id: string): Promise<AxiosResponse> => api.get(`/documents/${id}`),
@@ -87,7 +85,6 @@ export const documentsAPI = {
     api.delete(`/documents/${id}/share`, { data: { userId } }),
 };
 
-// Version API
 export const versionsAPI = {
   getVersions: (documentId: string): Promise<AxiosResponse> =>
     api.get(`/documents/${documentId}/versions`),

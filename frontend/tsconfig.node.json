@@ -6,14 +6,14 @@
     "skipLibCheck": true,
     "composite": true,
 
-    /* Bundler mode */
+
     "moduleResolution": "bundler",
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
 
-    /* Linting */
+
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

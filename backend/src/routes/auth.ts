@@ -5,11 +5,12 @@ import {
   login,
   forgotPassword,
   resetPassword,
+  verifyEmail,
+  resendVerificationEmail,
 } from "../controllers/authController";
 
 const router = express.Router();
 
-// Validation middleware
 const registerValidation = [
   body("username")
     .isLength({ min: 3, max: 30 })
@@ -47,10 +48,22 @@ const resetPasswordValidation = [
     .withMessage("Password must be at least 6 characters long"),
 ];
 
-// Routes
+const resendVerificationValidation = [
+  body("email")
+    .isEmail()
+    .withMessage("Please enter a valid email")
+    .normalizeEmail(),
+];
+
 router.post("/register", registerValidation, register);
 router.post("/login", loginValidation, login);
 router.post("/forgot-password", forgotPasswordValidation, forgotPassword);
 router.post("/reset-password", resetPasswordValidation, resetPassword);
+router.get("/verify-email/:token", verifyEmail);
+router.post(
+  "/resend-verification",
+  resendVerificationValidation,
+  resendVerificationEmail,
+);
 
 export default router;

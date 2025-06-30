@@ -12,6 +12,7 @@ import type { User, LoginData, RegisterData } from "../types";
 interface AuthResponse {
   success: boolean;
   error?: string;
+  email?: string;
 }
 
 interface AuthContextType {
@@ -44,7 +45,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Check if user is logged in on app start
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
 
@@ -74,15 +74,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const register = async (userData: RegisterData): Promise<AuthResponse> => {
     try {
-      const response = await authAPI.register(userData);
-      const { token, ...user } = response.data;
+      await authAPI.register(userData);
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      setUser(user);
-
-      toast.success("Registration successful!");
-      return { success: true };
+      // Don't auto-login after registration since email needs to be verified
+      toast.success(
+        "Registration successful! Please check your email to verify your account.",
+      );
+      return { success: true, email: userData.email };
     } catch (error: any) {
       const message = error.response?.data?.message || "Registration failed";
       toast.error(message);

@@ -74,7 +74,6 @@ export default function DocumentView() {
   const canEdit = () => {
     if (!document || !user) return false;
 
-    // Check if user is author or has edit permission
     return (
       document.author._id === user._id ||
       document.sharedWith?.some(

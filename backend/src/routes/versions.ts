@@ -8,7 +8,6 @@ import {
 
 const router = express.Router({ mergeParams: true });
 
-// Routes
 router.get("/", protect, getVersions);
 router.get("/:versionId", protect, getVersion);
 router.get("/:versionId/diff", protect, compareVersions);

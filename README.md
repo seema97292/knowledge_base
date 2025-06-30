@@ -1,6 +1,6 @@
 # Knowledge Base Platform
 
-A full-stack knowledge base platform built with MongoDB, Express.js, React, and Node.js (MERN stack). This application allows users to create, manage, and collaborate on documents with features like authentication, search, privacy controls, and version history.
+A full-stack knowledge base platform built with MongoDB, Express.js, React, and Node.js (MERN stack). This application allows users to create, manage, and collaborate on documents with features like authentication, email verification, search, privacy controls, and version history.
 
 ### Test Credentials
 - **Email**: john@example.com
@@ -101,7 +101,6 @@ knowledge-base-platform/
    ```bash
    git clone https://github.com/seema97292/knowledge_base
    cd knowledge-base/backend
-   ```
 
 2. **Install dependencies**
    ```bash
@@ -119,8 +118,9 @@ knowledge-base-platform/
    EMAIL_PORT=587
    EMAIL_USER=your-email@gmail.com
    EMAIL_PASS=your-app-password
+   FROM_NAME=Knowledge Base Platform
+   FRONTEND_URL=http://localhost:3000
    ```
-
 4. **Seed the database (optional)**
    ```bash
    node scripts/seedDatabase.ts

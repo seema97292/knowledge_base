@@ -2,9 +2,6 @@ import { Response } from "express";
 import Document from "../models/Document";
 import { AuthRequest } from "../types";
 
-// @desc    Get all versions of a document
-// @route   GET /api/documents/:id/versions
-// @access  Private
 const getVersions = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const document = await Document.findById(req.params.id)
@@ -16,11 +13,10 @@ const getVersions = async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
-    // Check access permissions
     const hasAccess =
       (document.author as any).toString() === req.user!._id.toString() ||
       document.sharedWith.some(
-        (share) => (share.user as any).toString() === req.user!._id.toString(),
+        (share) => (share.user as any).toString() === req.user!._id.toString()
       ) ||
       document.visibility === "public";
 
@@ -29,7 +25,6 @@ const getVersions = async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
-    // Sort versions by version number (descending)
     const versions = document.versionHistory
       .sort((a, b) => b.version - a.version)
       .map((version) => ({
@@ -53,9 +48,6 @@ const getVersions = async (req: AuthRequest, res: Response): Promise<void> => {
   }
 };
 
-// @desc    Get specific version of a document
-// @route   GET /api/documents/:id/versions/:versionId
-// @access  Private
 const getVersion = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const document = await Document.findById(req.params.id)
@@ -67,11 +59,10 @@ const getVersion = async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
-    // Check access permissions
     const hasAccess =
       (document.author as any)._id.toString() === req.user!._id.toString() ||
       document.sharedWith.some(
-        (share) => (share.user as any).toString() === req.user!._id.toString(),
+        (share) => (share.user as any).toString() === req.user!._id.toString()
       ) ||
       document.visibility === "public";
 
@@ -80,9 +71,8 @@ const getVersion = async (req: AuthRequest, res: Response): Promise<void> => {
       return;
     }
 
-    // Find the specific version
     const version = document.versionHistory.find(
-      (v) => (v._id as any).toString() === req.params.versionId,
+      (v) => (v._id as any).toString() === req.params.versionId
     );
 
     if (!version) {
@@ -108,19 +98,16 @@ const getVersion = async (req: AuthRequest, res: Response): Promise<void> => {
   }
 };
 
-// @desc    Compare versions (basic diff)
-// @route   GET /api/documents/:id/versions/:versionId/diff
-// @access  Private
 const compareVersions = async (
   req: AuthRequest,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
-    const { compareWith } = req.query; // Optional: specific version to compare with
+    const { compareWith } = req.query;
 
     const document = await Document.findById(req.params.id).populate(
       "versionHistory.changedBy",
-      "username email",
+      "username email"
     );
 
     if (!document) {
@@ -128,11 +115,10 @@ const compareVersions = async (
       return;
     }
 
-    // Check access permissions
     const hasAccess =
       (document.author as any).toString() === req.user!._id.toString() ||
       document.sharedWith.some(
-        (share) => (share.user as any).toString() === req.user!._id.toString(),
+        (share) => (share.user as any).toString() === req.user!._id.toString()
       ) ||
       document.visibility === "public";
 
@@ -141,9 +127,8 @@ const compareVersions = async (
       return;
     }
 
-    // Find the target version
     const targetVersion = document.versionHistory.find(
-      (v) => (v._id as any).toString() === req.params.versionId,
+      (v) => (v._id as any).toString() === req.params.versionId
     );
 
     if (!targetVersion) {
@@ -153,16 +138,14 @@ const compareVersions = async (
 
     let compareVersion;
     if (compareWith && typeof compareWith === "string") {
-      // Compare with specific version
       compareVersion = document.versionHistory.find(
-        (v) => (v._id as any).toString() === compareWith,
+        (v) => (v._id as any).toString() === compareWith
       );
       if (!compareVersion) {
         res.status(404).json({ message: "Comparison version not found" });
         return;
       }
     } else {
-      // Compare with current version (latest)
       compareVersion = {
         version: "current" as any,
         content: document.content,
@@ -171,10 +154,9 @@ const compareVersions = async (
       };
     }
 
-    // Simple diff implementation
     const diff = generateSimpleDiff(
       targetVersion.content,
-      compareVersion.content,
+      compareVersion.content
     );
 
     res.json({
@@ -208,14 +190,10 @@ interface DiffChange {
   newContent?: string;
 }
 
-// Simple diff function (basic implementation)
 const generateSimpleDiff = (
   oldContent: string,
-  newContent: string,
+  newContent: string
 ): DiffChange[] => {
-  // This is a very basic diff implementation
-  // In a production app, you'd want to use a proper diff library like 'diff'
-
   const oldLines = oldContent.split("\n");
   const newLines = newContent.split("\n");
 

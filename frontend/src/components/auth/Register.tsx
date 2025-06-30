@@ -43,7 +43,7 @@ export default function Register() {
       ...formData,
       [e.target.name]: e.target.value,
     });
-    // Clear error when user starts typing
+
     if (errors[e.target.name as keyof FormErrors]) {
       setErrors({
         ...errors,
@@ -88,14 +88,16 @@ export default function Register() {
 
     const registerData: RegisterData = {
       username: formData.username,
-      name: formData.name || formData.username, // Use username as name if name is empty
+      name: formData.name || formData.username,
       email: formData.email,
       password: formData.password,
     };
 
     const result = await register(registerData);
     if (result.success) {
-      navigate("/");
+      navigate("/registration-success", {
+        state: { email: registerData.email },
+      });
     }
 
     setLoading(false);
