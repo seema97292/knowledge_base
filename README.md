@@ -13,44 +13,77 @@ A full-stack knowledge base platform built with MongoDB, Express.js, React, and 
 ```
 knowledge-base-platform/
 ├── backend/
-│   ├── config/
-│   │   └── database.ts
-│   ├── controllers/
-│   │   ├── authController.ts
-│   │   ├── documentController.ts
-│   │   └── versionController.ts
-│   ├── middleware/
-│   │   └── auth.ts
-│   ├── models/
-│   │   ├── User.ts
-│   │   └── Document.ts
-│   ├── routes/
-│   │   ├── auth.ts
-│   │   ├── documents.ts
-│   │   └── versions.ts
-│   ├── utils/
-│   │   ├── generateToken.ts
-│   │   └── sendEmail.ts
-│   ├── public/ (React build files)
-│   ├── scripts/
-│   │   └── seedDatabase.ts
-│   ├── .env
-│   ├── package.json
-│   └── server.ts
-├── frontend/
 │   ├── src/
+│   │   ├── config/
+│   │   │   └── database.ts
+│   │   ├── controllers/
+│   │   │   ├── authController.ts
+│   │   │   ├── documentController.ts
+│   │   │   └── versionController.ts
+│   │   ├── middleware/
+│   │   │   └── auth.ts
+│   │   ├── models/
+│   │   │   ├── User.ts
+│   │   │   └── Document.ts
+│   │   ├── routes/
+│   │   │   ├── auth.ts
+│   │   │   ├── documents.ts
+│   │   │   └── versions.ts
+│   │   ├── scripts/
+│   │   │   └── seedDatabase.ts
+│   │   ├── types/
+│   │   │   └── index.ts
+│   │   ├── utils/
+│   │   │   ├── generateToken.ts
+│   │   │   └── sendEmail.ts
+│   │   └── server.ts
+│   ├── .env
+│   ├── .env.example
+│   ├── jest.config.js
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── README.md
+├── frontend/
+│   ├── public/
+│   │   └── favicon.ico
+│   ├── src/
+│   │   ├── assets/
+│   │   │   └── react.svg
 │   │   ├── components/
 │   │   │   ├── auth/
+│   │   │   │   ├── ForgotPassword.tsx
+│   │   │   │   ├── Login.tsx
+│   │   │   │   └── Register.tsx
 │   │   │   ├── documents/
+│   │   │   │   ├── DocumentEditor.tsx
+│   │   │   │   ├── DocumentList.tsx
+│   │   │   │   └── DocumentView.tsx
 │   │   │   ├── layout/
-│   │   │   └── ui/
+│   │   │   │   └── Header.tsx
+│   │   │   ├── ui/ (shadcn/ui components)
+│   │   │   └── ProtectedRoute.tsx
 │   │   ├── hooks/
+│   │   │   ├── use-mobile.ts
 │   │   │   └── useAuth.tsx
 │   │   ├── lib/
-│   │   │   └── api.tsx
+│   │   │   ├── api.tsx
+│   │   │   └── utils.ts
+│   │   ├── types/
+│   │   │   ├── index.ts
+│   │   │   └── jsx.d.ts
+│   │   ├── App.css
 │   │   ├── App.tsx
-│   │   └── main.tsx
+│   │   ├── index.css
+│   │   ├── main.tsx
+│   │   └── vite-env.d.ts
+│   ├── .env
+│   ├── .env.example
+│   ├── components.json
+│   ├── eslint.config.js
+│   ├── index.html
 │   ├── package.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
 │   └── vite.config.ts
 └── README.md
 ```
@@ -110,7 +143,13 @@ knowledge-base-platform/
    npm install
    ```
 
-3. **Start the development server**
+3. **Environment Configuration**
+   Create a `.env` file in the frontend directory:
+   ```env
+   VITE_API_BASE_URL=http://localhost:5101/api
+   ```
+
+4. **Start the development server**
    ```bash
    npm run dev
    ```
