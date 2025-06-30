@@ -137,13 +137,26 @@ const forgotPassword = async (req: Request, res: Response): Promise<void> => {
 
     const resetUrl = `${APP_URL}/reset-password/${resetToken}`;
 
-    const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+    const message = `
+      <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
+        <h1 style="color: #333;">Password Reset Request</h1>
+        <p>You are receiving this email because you (or someone else) has requested a password reset for your Knowledge Base Platform account.</p>
+        <p>Please click the button below to reset your password:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${resetUrl}" style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+        </div>
+        <p>Or copy and paste this link into your browser:</p>
+        <p style="word-break: break-all;">${resetUrl}</p>
+        <p><strong>This link will expire in 10 minutes.</strong></p>
+        <p>If you did not request a password reset, please ignore this email and your password will remain unchanged.</p>
+      </div>
+    `;
 
     try {
       await sendEmail({
         email: user.email,
-        subject: "Password reset token",
-        message,
+        subject: "Password Reset Request - Knowledge Base Platform",
+        html: message,
       });
 
       res.status(200).json({ message: "Email sent" });
@@ -214,7 +227,7 @@ const verifyEmail = async (req: Request, res: Response): Promise<void> => {
 
     if (!user) {
       res
-        .status(400)
+        .status(401)
         .json({ message: "Invalid or expired verification token" });
       return;
     }

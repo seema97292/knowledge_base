@@ -13,6 +13,7 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import RegistrationSuccess from "./components/auth/RegistrationSuccess";
 import ResendVerification from "./components/auth/ResendVerification";
+import ResetPassword from "./components/auth/ResetPassword";
 import VerifyEmail from "./components/auth/VerifyEmail";
 import DocumentEditor from "./components/documents/DocumentEditor";
 import DocumentList from "./components/documents/DocumentList";
@@ -25,12 +26,23 @@ import Header from "./components/layout/Header";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 
 function AppContent() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -58,6 +70,12 @@ function AppContent() {
           path="/forgot-password"
           element={
             isAuthenticated ? <Navigate to="/" replace /> : <ForgotPassword />
+          }
+        />
+        <Route
+          path="/reset-password/:token"
+          element={
+            isAuthenticated ? <Navigate to="/" replace /> : <ResetPassword />
           }
         />
         <Route
