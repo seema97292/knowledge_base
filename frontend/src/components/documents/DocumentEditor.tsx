@@ -1,25 +1,23 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import RichTextEditor from "../ui/rich-text-editor";
-import { documentsAPI } from "../../lib/api";
-import { useAuth } from "../../hooks/useAuth";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { Skeleton } from "../ui/skeleton";
 import {
-  Save,
+  AlertCircle,
   ArrowLeft,
   Globe,
-  Lock,
-  Share2,
-  History,
   Loader2,
-  AlertCircle,
+  Lock,
+  Save,
+  Share2,
 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { documentsAPI } from "../../lib/api";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import RichTextEditor from "../ui/rich-text-editor";
+import { Skeleton } from "../ui/skeleton";
 
 interface Document {
   id: string;
@@ -42,10 +40,12 @@ export default function DocumentEditor() {
   const [document, setDocument] = useState<Document | null>(null);
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+  const [visibility, setVisibility] = useState<string>("private");
   const [loading, setLoading] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [hasChanges, setHasChanges] = useState<boolean>(false);
+  const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
   const autoSaveRef = useRef<NodeJS.Timeout | null>(null);
   const path = window.location.pathname;
   const isNewDocument = path.endsWith("/new");
@@ -61,14 +61,13 @@ export default function DocumentEditor() {
   }, [id]);
 
   useEffect(() => {
-   
     if (hasChanges && !isNewDocument) {
       if (autoSaveRef.current) {
         clearTimeout(autoSaveRef.current);
       }
       autoSaveRef.current = setTimeout(() => {
         handleSave(true);
-      }, 3000); 
+      }, 3000);
     }
 
     return () => {
@@ -89,6 +88,7 @@ export default function DocumentEditor() {
       setDocument(doc);
       setTitle(doc.title);
       setContent(doc.content);
+      setVisibility(doc.visibility);
     } catch (err: any) {
       setError("Failed to load document");
       toast.error("Failed to load document");
@@ -119,7 +119,7 @@ export default function DocumentEditor() {
       const documentData = {
         title: title.trim(),
         content,
-        visibility: document?.visibility || "private",
+        visibility: visibility,
       };
 
       let response;
@@ -178,6 +178,34 @@ export default function DocumentEditor() {
     }
   };
 
+  const handleToggleVisibility = async () => {
+    const newVisibility = visibility === "public" ? "private" : "public";
+
+    if (isNewDocument) {
+      setVisibility(newVisibility);
+      setHasChanges(true);
+      toast.success(`Document visibility set to ${newVisibility}`);
+    } else if (id) {
+      try {
+        setIsUpdatingVisibility(true);
+        await documentsAPI.updateVisibility(id, newVisibility);
+        setVisibility(newVisibility);
+        if (document) {
+          setDocument({
+            ...document,
+            visibility: newVisibility,
+          });
+        }
+        toast.success(`Document is now ${newVisibility}`);
+      } catch (error) {
+        console.error("Error updating visibility:", error);
+        toast.error("Failed to update document visibility");
+      } finally {
+        setIsUpdatingVisibility(false);
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto space-y-6">
@@ -224,7 +252,6 @@ export default function DocumentEditor() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      
       <div className="flex items-center justify-between">
         <Button
           variant="ghost"
@@ -237,24 +264,19 @@ export default function DocumentEditor() {
         </Button>
 
         <div className="flex items-center gap-3">
-          {document && (
+          {(document || isNewDocument) && (
             <>
-              <Badge
-                variant="secondary"
-                className={`flex items-center gap-1 ${getVisibilityColor(
-                  document.visibility,
-                )}`}
-              >
-                {getVisibilityIcon(document.visibility)}
-                {document.visibility}
-              </Badge>
               <Button
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-2"
+                onClick={handleToggleVisibility}
+                disabled={isUpdatingVisibility}
+                className={`flex items-center gap-1 ${getVisibilityColor(
+                  visibility,
+                )}`}
               >
-                <History className="h-4 w-4" />
-                Version History
+                {getVisibilityIcon(visibility)}
+                {visibility}
               </Button>
             </>
           )}

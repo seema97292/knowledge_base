@@ -17,6 +17,9 @@ import VerifyEmail from "./components/auth/VerifyEmail";
 import DocumentEditor from "./components/documents/DocumentEditor";
 import DocumentList from "./components/documents/DocumentList";
 import DocumentView from "./components/documents/DocumentView";
+import DocumentVersions from "./components/documents/DocumentVersions";
+import DocumentVersionView from "./components/documents/DocumentVersionView";
+import DocumentVersionCompare from "./components/documents/DocumentVersionCompare";
 import Header from "./components/layout/Header";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 
@@ -126,6 +129,42 @@ function AppContent() {
               <Header onSearch={handleSearch} />
               <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                 <DocumentEditor />
+              </main>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/documents/:id/versions"
+          element={
+            <ProtectedRoute>
+              <Header onSearch={handleSearch} />
+              <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <DocumentVersions />
+              </main>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/documents/:id/versions/:versionId"
+          element={
+            <ProtectedRoute>
+              <Header onSearch={handleSearch} />
+              <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <DocumentVersionView />
+              </main>
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/documents/:id/versions/:versionId/compare"
+          element={
+            <ProtectedRoute>
+              <Header onSearch={handleSearch} />
+              <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <DocumentVersionCompare />
               </main>
             </ProtectedRoute>
           }

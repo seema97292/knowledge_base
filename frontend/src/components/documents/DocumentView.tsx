@@ -1,26 +1,25 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { documentsAPI } from "../../lib/api";
-import { useAuth } from "../../hooks/useAuth";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Badge } from "../ui/badge";
-import { Skeleton } from "../ui/skeleton";
+import { formatDistanceToNow } from "date-fns";
 import {
+  AlertCircle,
   ArrowLeft,
+  Calendar,
   Edit,
   Globe,
-  Lock,
-  Share2,
   History,
-  Calendar,
-  User,
-  AlertCircle,
+  Lock,
   Trash2,
+  User
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { documentsAPI } from "../../lib/api";
 import type { Document } from "../../types";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
 
 export default function DocumentView() {
   const { id } = useParams<{ id: string }>();
@@ -29,6 +28,7 @@ export default function DocumentView() {
   const [document, setDocument] = useState<Document | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
 
   useEffect(() => {
     fetchDocument();
@@ -68,6 +68,30 @@ export default function DocumentView() {
     } catch (error) {
       console.error("Error deleting document:", error);
       toast.error("Failed to delete document");
+    }
+  };
+
+  const handleToggleVisibility = async () => {
+    if (!document) return;
+
+    const newVisibility =
+      document.visibility === "public" ? "private" : "public";
+
+    try {
+      setIsUpdatingVisibility(true);
+      await documentsAPI.updateVisibility(document._id, newVisibility);
+
+      setDocument({
+        ...document,
+        visibility: newVisibility,
+      });
+
+      toast.success(`Document is now ${newVisibility}`);
+    } catch (error) {
+      console.error("Error updating visibility:", error);
+      toast.error("Failed to update document visibility");
+    } finally {
+      setIsUpdatingVisibility(false);
     }
   };
 
@@ -153,23 +177,47 @@ export default function DocumentView() {
               </Button>
             </div>
             <div className="flex items-center space-x-2">
-              <Badge
-                variant={
-                  document.visibility === "public" ? "default" : "secondary"
-                }
-              >
-                {document.visibility === "public" ? (
-                  <>
-                    <Globe className="mr-1 h-3 w-3" />
-                    Public
-                  </>
-                ) : (
-                  <>
-                    <Lock className="mr-1 h-3 w-3" />
-                    Private
-                  </>
-                )}
-              </Badge>
+              {canEdit() && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleToggleVisibility}
+                  disabled={isUpdatingVisibility}
+                  className="flex items-center space-x-1"
+                >
+                  {document.visibility === "public" ? (
+                    <>
+                      <Globe className="h-4 w-4" />
+                      <span>Public</span>
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="h-4 w-4" />
+                      <span>Private</span>
+                    </>
+                  )}
+                </Button>
+              )}
+
+              {!canEdit() && (
+                <Badge
+                  variant={
+                    document.visibility === "public" ? "default" : "secondary"
+                  }
+                >
+                  {document.visibility === "public" ? (
+                    <>
+                      <Globe className="mr-1 h-3 w-3" />
+                      Public
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="mr-1 h-3 w-3" />
+                      Private
+                    </>
+                  )}
+                </Badge>
+              )}
 
               <Button
                 variant="outline"
@@ -182,15 +230,6 @@ export default function DocumentView() {
 
               {canEdit() && (
                 <>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => navigate(`/documents/${document._id}/share`)}
-                  >
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Share
-                  </Button>
-
                   <Link to={`/documents/${document._id}/edit`}>
                     <Button size="sm">
                       <Edit className="h-4 w-4 mr-2" />

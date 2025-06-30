@@ -75,8 +75,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const register = async (userData: RegisterData): Promise<AuthResponse> => {
     try {
       await authAPI.register(userData);
-
-      // Don't auto-login after registration since email needs to be verified
       toast.success(
         "Registration successful! Please check your email to verify your account.",
       );
