@@ -1,6 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
-import { protect } from "../middleware/auth";
+import { protect, protectWithoutAuth } from "../middleware/auth";
 import {
   getDocuments,
   getDocument,
@@ -51,7 +51,7 @@ const shareValidation = [
 
 router.get("/search", protect, searchDocuments);
 router.get("/", protect, getDocuments);
-router.get("/:id", getDocument);
+router.get("/:id", protectWithoutAuth, getDocument);
 router.post("/", protect, createDocumentValidation, createDocument);
 router.put("/:id", protect, updateDocumentValidation, updateDocument);
 router.delete("/:id", protect, deleteDocument);
